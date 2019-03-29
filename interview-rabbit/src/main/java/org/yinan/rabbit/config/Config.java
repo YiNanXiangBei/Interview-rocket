@@ -2,13 +2,14 @@ package org.yinan.rabbit.config;
 
 /**
  * @author yinan
+ * 配置类
  * @date 19-3-28
  */
 public class  Config {
 
     private String host;
 
-    private long port;
+    private int port;
 
     private String username;
 
@@ -26,11 +27,11 @@ public class  Config {
         this.host = host;
     }
 
-    public long getPort() {
+    public int getPort() {
         return port;
     }
 
-    void setPort(long port) {
+    void setPort(int port) {
         this.port = port;
     }
 

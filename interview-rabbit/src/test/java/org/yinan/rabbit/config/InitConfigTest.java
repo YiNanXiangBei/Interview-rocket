@@ -15,7 +15,7 @@ public class InitConfigTest {
     @Test
     public void init() {
         InitConfig initConfig = new InitConfig();
-        Config config = initConfig.init("application-test.properties");
+        Config config = initConfig.init("/home/laowang/gitwarehouse/Interview-rocket/interview-rabbit/src/test/resources/application-test.properties");
         Assert.assertEquals("127.0.0.1",config.getHost());
         Assert.assertEquals(5672,config.getPort());
         Assert.assertEquals("test",config.getUsername());

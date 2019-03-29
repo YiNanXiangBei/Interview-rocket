@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 /**
  * @author yinan
+ * 初始化加载配置类
  * @date 19-3-28
  */
 public class InitConfig {
@@ -34,7 +35,7 @@ public class InitConfig {
 
     private void setVal(Config config, ResourceBundle bundle) {
         config.setHost(bundle.getString("rabbitmq.host"));
-        config.setPort(Long.valueOf(bundle.getString("rabbitmq.port")));
+        config.setPort(Integer.valueOf(bundle.getString("rabbitmq.port")));
         config.setPassword(bundle.getString("rabbitmq.password"));
         config.setUsername(bundle.getString("rabbitmq.username"));
         config.setVirtualHost(bundle.getString("rabbitmq.virtual-host"));

@@ -12,23 +12,19 @@ import java.nio.charset.Charset;
  */
 public class Producer {
 
-    private final static String EXCHANGE_NAME = "";
+    private final static String EXCHANGE_NAME = "test4";
 
-    private final static String ROUTING_KEY = "test";
+    private final static String ROUTING_KEY = "test.update";
 
-    private final static String QUEUE_NAME = "";
-
-    private final static String TYPE = "";
 
     private Channel channel = null;
 
-    private RabbitClient client = new RabbitClient();
-
     public Producer() throws IOException {
+        RabbitClient client = new RabbitClient();
         channel = client.newChannel();
     }
 
-    private void publish(String message) throws IOException {
+    public void publish(String message) throws IOException {
         byte[] messages = message.getBytes(Charset.forName("UTF-8"));
         channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, null, messages);
     }

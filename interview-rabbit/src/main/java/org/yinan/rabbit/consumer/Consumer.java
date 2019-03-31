@@ -7,6 +7,7 @@ import com.rabbitmq.client.Envelope;
 import org.yinan.rabbit.client.RabbitClient;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author yinan
@@ -14,22 +15,20 @@ import java.io.IOException;
  */
 public class Consumer {
 
-    private final static String EXCHANGE_NAME = "";
+    private final static String QUEUE_NAME = "direct";
 
-    private final static String ROUTING_KEY = "test";
+    private final static String ROUTING_KEY = "test1.111";
 
-    private final static String QUEUE_NAME = "";
+    private final static String EXCHANGE_NAME = "test4";
 
-    private final static String TYPE = "";
 
     private Channel channel = null;
 
-    private RabbitClient client = new RabbitClient();
-
     public Consumer() {
         try {
+            RabbitClient client = new RabbitClient();
             channel = client.newChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, TYPE, true);
+            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
             channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,13 +38,19 @@ public class Consumer {
 
     public  void receiver() throws IOException {
         boolean autoAck = false;
-        channel.basicConsume(QUEUE_NAME, autoAck, "", new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] bodys) {
+        for (;;) {
+            channel.basicConsume(QUEUE_NAME, autoAck, "", new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] bodys) throws IOException {
+                    String message = new String(bodys, StandardCharsets.UTF_8);
+                    System.out.println("Consumer have received : " + message);
+                    channel.basicAck(envelope.getDeliveryTag(), false);
 
-            }
+                }
 
-        });
+            });
+        }
+
     }
 
 }

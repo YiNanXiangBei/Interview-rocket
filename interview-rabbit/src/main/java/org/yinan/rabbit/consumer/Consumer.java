@@ -5,6 +5,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import org.yinan.rabbit.client.RabbitClient;
+import org.yinan.rabbit.constant.Constant;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -16,11 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Consumer {
 
-    private final static String QUEUE_NAME = "direct";
 
-    private final static String ROUTING_KEY = "test.*";
-
-    private final static String EXCHANGE_NAME = "test4";
 
 
     private Channel channel = null;
@@ -29,8 +26,8 @@ public class Consumer {
         try {
             RabbitClient client = new RabbitClient();
             channel = client.newChannel();
-            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-            channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+            channel.queueDeclare(Constant.QUEUE_NAME, true, false, false, null);
+            channel.queueBind(Constant.QUEUE_NAME, Constant.EXCHANGE_NAME, Constant.CONSUMER_ROUTING_KEY);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,7 +37,7 @@ public class Consumer {
     public  void receiver() throws IOException {
         boolean autoAck = false;
         //异步调用的方法，即只要mq有消息，就会回调到这里，所以只需要保证代码没有停止，就可以一直接收消息
-        channel.basicConsume(QUEUE_NAME, autoAck, "", new DefaultConsumer(channel) {
+        channel.basicConsume(Constant.QUEUE_NAME, autoAck, "", new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] bodys) throws IOException {
                 String message = new String(bodys, StandardCharsets.UTF_8);

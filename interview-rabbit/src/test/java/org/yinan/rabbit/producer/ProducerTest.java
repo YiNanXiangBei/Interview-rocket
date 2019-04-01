@@ -23,5 +23,7 @@ public class ProducerTest {
             producer.publish("test " + i);
         }
 
+//        producer.confirms();
+
     }
 }

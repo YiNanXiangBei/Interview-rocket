@@ -5,6 +5,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.yinan.rabbit.config.Config;
 import org.yinan.rabbit.config.InitConfig;
+import org.yinan.rabbit.constant.Constant;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -19,9 +20,7 @@ public class RabbitClient {
 
     private volatile static ConnectionFactory factory = new ConnectionFactory();
 
-    private final static String EXCHANGE_NAME = "test4";
 
-    private final static String TYPE = "topic";
 
     static {
         Config config = new InitConfig().init("/home/laowang/gitwarehouse/Interview-rocket/interview-rabbit/src/main/resources/application.properties");
@@ -39,7 +38,7 @@ public class RabbitClient {
 
     public Channel newChannel() throws IOException {
         Channel channel = connection.createChannel();
-        channel.exchangeDeclare(EXCHANGE_NAME, TYPE, true);
+        channel.exchangeDeclare(Constant.EXCHANGE_NAME, Constant.TYPE, true);
         return channel;
     }
 

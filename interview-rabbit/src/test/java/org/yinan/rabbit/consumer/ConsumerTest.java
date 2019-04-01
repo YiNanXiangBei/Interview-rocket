@@ -3,6 +3,8 @@ package org.yinan.rabbit.consumer;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.*;
 
@@ -17,5 +19,9 @@ public class ConsumerTest {
     @Test
     public void receiver() throws IOException {
         consumer.receiver();
+        for (;;) {
+
+        }
+
     }
 }

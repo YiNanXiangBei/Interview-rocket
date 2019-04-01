@@ -18,7 +18,7 @@ public class ProducerTest {
     }
 
     @Test
-    public void publish() throws IOException {
+    public void publish() throws IOException, InterruptedException {
         for (int i = 0; i < 100; i++) {
             producer.publish("test " + i);
         }

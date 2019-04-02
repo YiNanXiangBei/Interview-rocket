@@ -5,8 +5,12 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
 import org.yinan.rabbit.client.RabbitClient;
 import org.yinan.rabbit.constant.Constant;
+import org.yinan.rabbit.model.Amount;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.TreeSet;
 
@@ -31,8 +35,7 @@ public class Producer {
         channel.confirmSelect();
     }
 
-    public void publish(String message) throws IOException, InterruptedException {
-        byte[] messages = message.getBytes(Charset.forName("UTF-8"));
+    public void publish(byte[] messages) throws IOException, InterruptedException {
         channel.addConfirmListener(new ConfirmListener() {
             @Override
             public void handleAck(long deliveryTag, boolean multiple) throws IOException {
@@ -56,6 +59,16 @@ public class Producer {
 
     public void confirms() throws InterruptedException {
         channel.waitForConfirms();
+    }
+
+    public byte[] serial(Serializable obj) throws IOException {
+        if (obj == null) {
+            return null;
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(obj);
+        return outputStream.toByteArray();
     }
 
 }

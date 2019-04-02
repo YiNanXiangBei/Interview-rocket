@@ -6,9 +6,9 @@ package org.yinan.rabbit.constant;
  * 常量类
  */
 public class Constant {
-    public final static String EXCHANGE_NAME = "test8";
+    public final static String EXCHANGE_NAME = "test11";
 
-    public final static String TYPE = "direct";
+    public final static String TYPE = "topic";
 
     public final static String QUEUE_NAME = "direct";
 

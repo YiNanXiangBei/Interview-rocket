@@ -19,9 +19,7 @@ public class RabbitClient {
     private volatile static Connection connection = null;
 
     private volatile static ConnectionFactory factory = new ConnectionFactory();
-
-
-
+    
     static {
         Config config = new InitConfig().init("/home/laowang/gitwarehouse/Interview-rocket/interview-rabbit/src/main/resources/application.properties");
         factory.setUsername(config.getUsername());
@@ -39,6 +37,8 @@ public class RabbitClient {
     public Channel newChannel() throws IOException {
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(Constant.EXCHANGE_NAME, Constant.TYPE, true);
+        channel.queueDeclare(Constant.QUEUE_NAME, true, false, false, null);
+        channel.queueBind(Constant.QUEUE_NAME, Constant.EXCHANGE_NAME, Constant.CONSUMER_ROUTING_KEY);
         return channel;
     }
 

@@ -6,9 +6,13 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import org.yinan.rabbit.client.RabbitClient;
 import org.yinan.rabbit.constant.Constant;
+import org.yinan.rabbit.model.Amount;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.ObjectInputStream;
+import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,8 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Consumer {
 
-
-
+    List<String> tags = new LinkedList<>();
 
     private Channel channel = null;
 
@@ -26,8 +29,6 @@ public class Consumer {
         try {
             RabbitClient client = new RabbitClient();
             channel = client.newChannel();
-            channel.queueDeclare(Constant.QUEUE_NAME, true, false, false, null);
-            channel.queueBind(Constant.QUEUE_NAME, Constant.EXCHANGE_NAME, Constant.CONSUMER_ROUTING_KEY);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,8 +41,22 @@ public class Consumer {
         channel.basicConsume(Constant.QUEUE_NAME, autoAck, "", new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] bodys) throws IOException {
-                String message = new String(bodys, StandardCharsets.UTF_8);
-                System.out.println("Consumer have received : " + message);
+                try {
+                    Amount amount = deserial(bodys);
+                    String serialNo = amount.getSerialNo();
+                    if (tags.contains(serialNo)) {
+                        //如果basicNack里面的第三个参数设置为true那么执行nack的消息将进入队列里面重新进行排队，
+                        //这样如果该消息一直不会被消费，将会十分浪费系统性能
+                        channel.basicNack(envelope.getDeliveryTag(), false, false);
+                        return;
+                    } else {
+                        tags.add(amount.getSerialNo());
+                    }
+                    System.out.println("Consumer have received : " + amount.toString());
+                } catch (ClassNotFoundException e) {
+                    System.err.println(e.toString());
+                }
+                //如果这里注释掉，那么消息会变成unacked状态
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
 
@@ -49,4 +64,10 @@ public class Consumer {
 
     }
 
+
+    private Amount deserial(byte[] messages) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(messages);
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        return  (Amount) objectInputStream.readObject();
+    }
 }

@@ -8,6 +8,8 @@ import org.yinan.rabbit.config.InitConfig;
 import org.yinan.rabbit.constant.Constant;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -36,9 +38,17 @@ public class RabbitClient {
 
     public Channel newChannel() throws IOException {
         Channel channel = connection.createChannel();
-        channel.exchangeDeclare(Constant.EXCHANGE_NAME, Constant.TYPE, true);
+        Map<String, Object> arguments = new HashMap<>();
+        channel.exchangeDeclare(Constant.DELAY_EXCHANGE, Constant.TYPE, true);
+
+        arguments.put("x-dead-letter-exchange", Constant.DELAY_EXCHANGE);
+        arguments.put("x-dead-letter-routing-key", Constant.CONSUMER_ROUTING_KEY);
+        //声明一个延时队列
+        channel.queueDeclare(Constant.DELAY_QUEUE, true, false, false, arguments);
+        //声明一个正常队列
         channel.queueDeclare(Constant.QUEUE_NAME, true, false, false, null);
-        channel.queueBind(Constant.QUEUE_NAME, Constant.EXCHANGE_NAME, Constant.CONSUMER_ROUTING_KEY);
+        //延时队列和交换器进行绑定
+        channel.queueBind(Constant.QUEUE_NAME, Constant.DELAY_EXCHANGE, Constant.CONSUMER_ROUTING_KEY);
         return channel;
     }
 

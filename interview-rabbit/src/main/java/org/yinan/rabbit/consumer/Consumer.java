@@ -38,12 +38,13 @@ public class Consumer {
     public  void receiver() throws IOException {
         boolean autoAck = false;
         //异步调用的方法，即只要mq有消息，就会回调到这里，所以只需要保证代码没有停止，就可以一直接收消息
-        channel.basicConsume(Constant.QUEUE_NAME, autoAck, "", new DefaultConsumer(channel) {
+        channel.basicConsume(Constant.DELAY_QUEUE, autoAck, "", new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] bodys) throws IOException {
                 try {
                     Amount amount = deserial(bodys);
                     String serialNo = amount.getSerialNo();
+//                    TimeUnit.SECONDS.sleep(20);
                     if (tags.contains(serialNo)) {
                         //如果basicNack里面的第三个参数设置为true那么执行nack的消息将进入队列里面重新进行排队，
                         //这样如果该消息一直不会被消费，将会十分浪费系统性能

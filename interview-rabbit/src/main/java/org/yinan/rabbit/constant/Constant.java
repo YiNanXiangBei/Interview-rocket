@@ -6,7 +6,7 @@ package org.yinan.rabbit.constant;
  * 常量类
  */
 public class Constant {
-    public final static String EXCHANGE_NAME = "test11";
+    public final static String EXCHANGE_NAME = "test13";
 
     public final static String TYPE = "topic";
 
@@ -15,5 +15,9 @@ public class Constant {
     public final static String CONSUMER_ROUTING_KEY = "test";
 
     public final static String PRODUCER_ROUTING_KEY = "test";
+
+    public final static String DELAY_QUEUE = "delay_queue";
+
+    public final static String DELAY_EXCHANGE = "delay_exchange1";
 
 }

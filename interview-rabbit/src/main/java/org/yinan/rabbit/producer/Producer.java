@@ -51,8 +51,9 @@ public class Producer {
         AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
                 .deliveryMode(2)
                 .contentEncoding("UTF-8")
+                .expiration("20000")
                 .build();
-        channel.basicPublish(Constant.EXCHANGE_NAME, Constant.PRODUCER_ROUTING_KEY, properties, messages);
+        channel.basicPublish(Constant.DELAY_EXCHANGE, Constant.PRODUCER_ROUTING_KEY, properties, messages);
         confirms();
 
     }

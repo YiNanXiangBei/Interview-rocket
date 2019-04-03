@@ -39,16 +39,21 @@ public class RabbitClient {
     public Channel newChannel() throws IOException {
         Channel channel = connection.createChannel();
         Map<String, Object> arguments = new HashMap<>();
+
         channel.exchangeDeclare(Constant.DELAY_EXCHANGE, Constant.TYPE, true);
+        //声明一个延时队列
+        channel.queueDeclare(Constant.DELAY_QUEUE, true, false, false, null);
+        channel.queueBind(Constant.DELAY_QUEUE, Constant.DELAY_EXCHANGE, Constant.DELAY_ROUTING_KEY);
 
         arguments.put("x-dead-letter-exchange", Constant.DELAY_EXCHANGE);
-        arguments.put("x-dead-letter-routing-key", Constant.CONSUMER_ROUTING_KEY);
-        //声明一个延时队列
-        channel.queueDeclare(Constant.DELAY_QUEUE, true, false, false, arguments);
-        //声明一个正常队列
-        channel.queueDeclare(Constant.QUEUE_NAME, true, false, false, null);
+        arguments.put("x-dead-letter-routing-key", Constant.DELAY_ROUTING_KEY);
+
+        //声明一个普通的队列
+        channel.exchangeDeclare(Constant.EXCHANGE_NAME, Constant.TYPE, true);
+        //声明一个正常队列,并设置参数
+        channel.queueDeclare(Constant.QUEUE_NAME, true, false, false, arguments);
         //延时队列和交换器进行绑定
-        channel.queueBind(Constant.QUEUE_NAME, Constant.DELAY_EXCHANGE, Constant.CONSUMER_ROUTING_KEY);
+        channel.queueBind(Constant.QUEUE_NAME, Constant.EXCHANGE_NAME, Constant.CONSUMER_ROUTING_KEY);
         return channel;
     }
 

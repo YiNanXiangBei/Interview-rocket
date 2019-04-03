@@ -12,12 +12,14 @@ public class Constant {
 
     public final static String QUEUE_NAME = "direct";
 
-    public final static String CONSUMER_ROUTING_KEY = "test";
+    public final static String CONSUMER_ROUTING_KEY = "delay.test.*";
 
-    public final static String PRODUCER_ROUTING_KEY = "test";
+    public final static String PRODUCER_ROUTING_KEY = "delay.test.producer";
 
     public final static String DELAY_QUEUE = "delay_queue";
 
-    public final static String DELAY_EXCHANGE = "delay_exchange1";
+    public final static String DELAY_EXCHANGE = "delay_exchange12";
+
+    public final static String DELAY_ROUTING_KEY = "delay.test.test";
 
 }

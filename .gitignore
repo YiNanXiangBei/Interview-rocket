@@ -24,3 +24,4 @@ hs_err_pid*
 /.idea/
 /interview-rabbit/interview-rabbit.iml
 /interview-rabbit/target/
+/interview-transaction/interview-transaction.iml

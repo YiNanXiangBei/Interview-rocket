@@ -21,13 +21,19 @@ public class AccountDaoImpl implements AccountDao {
 
     @Override
     public void in(String serialNo, int money) {
-        String sql = "update account set money = money + ? where serial_no = ?";
+        String sql = "update amount set money = money + ? where serial_no = ?";
         jdbcTemplate.update(sql, money, serialNo);
     }
 
     @Override
     public void out(String serialNo, int money) {
-        String sql = "update account set money = money - ? where serial_no = ?";
+        String sql = "update amount set money = money - ? where serial_no = ?";
         jdbcTemplate.update(sql, money, serialNo);
+    }
+
+    @Override
+    public void insert(String serialNo, int money) {
+        String sql = "insert into amount(serial_no, money) values(?, ?)";
+        jdbcTemplate.update(sql, serialNo, money);
     }
 }

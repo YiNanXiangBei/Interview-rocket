@@ -22,10 +22,17 @@ public class AmountServiceImpl implements AmountService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = ArithmeticException.class, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.NESTED, noRollbackFor = ArithmeticException.class, rollbackFor = Exception.class)
+//    @Transactional(propagation = Propagation.NESTED)
     public void transfer(String out, String in, int money) {
         accountDao.out(out, money);
         int i = 1 / 0;
         accountDao.in(in, money);
+    }
+
+    @Override
+    @Transactional
+    public void insert(String serialNo, int money) {
+        accountDao.insert(serialNo, money);
     }
 }

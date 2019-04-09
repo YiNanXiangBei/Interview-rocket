@@ -8,4 +8,6 @@ public interface AmountService {
 
     void transfer(String out, String in, int money);
 
+    void insert(String serialNo, int money);
+
 }

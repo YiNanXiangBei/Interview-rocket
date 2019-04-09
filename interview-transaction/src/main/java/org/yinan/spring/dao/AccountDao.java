@@ -8,4 +8,6 @@ public interface AccountDao {
     void in(String serialNo, int money);
 
     void out(String serialNo, int money);
+
+    void insert(String serialNo, int money);
 }

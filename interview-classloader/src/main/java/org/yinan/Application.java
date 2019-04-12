@@ -1,20 +1,16 @@
-package org.yinan.loader;
+package org.yinan;
 
 import com.google.common.collect.Sets;
-import org.junit.Test;
-import org.yinan.entity.People;
+import org.yinan.loader.MyClassLoader;
 
-import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static org.junit.Assert.*;
-
 /**
  * @author yinan
- * @date 19-4-10
+ * @date created in 下午2:51 19-4-12
  */
-public class MyClassLoaderTest {
+public class Application {
 
     private void printVersion() {
         System.out.println("版本号1");
@@ -26,16 +22,17 @@ public class MyClassLoaderTest {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                String swapPath = MyClassLoader.class.getResource("").getPath();
-                String className = "org.yinan.loader.MyClassLoaderTest";
+                String swapPath = "/home/laowang/gitwarehouse/Interview-rocket/interview-classloader/target/classes/";
+                String className = "org.yinan.Application";
                 MyClassLoader myClassLoader = new MyClassLoader(Thread.currentThread().getContextClassLoader(), className, swapPath);
                 try {
-                    Object o = myClassLoader.loadClass(className).newInstance();
-                    o.getClass().getMethod("printVersion").invoke(o);
+                    Application application = (Application) myClassLoader.loadClass().newInstance();
+                    application.printVersion();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }, 0, 2000);
     }
+
 }

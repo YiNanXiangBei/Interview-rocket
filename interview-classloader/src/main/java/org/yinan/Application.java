@@ -1,6 +1,8 @@
 package org.yinan;
 
 import com.google.common.collect.Sets;
+import org.yinan.exec.VersionControl;
+import org.yinan.loader.FileSystemClassLoader;
 import org.yinan.loader.MyClassLoader;
 
 import java.util.Timer;
@@ -12,22 +14,19 @@ import java.util.TimerTask;
  */
 public class Application {
 
-    private void printVersion() {
-        System.out.println("版本号1");
-    }
-
-
-
     public static void main(String[] args) {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 String swapPath = "/home/laowang/gitwarehouse/Interview-rocket/interview-classloader/target/classes/";
-                String className = "org.yinan.Application";
-                MyClassLoader myClassLoader = new MyClassLoader(Thread.currentThread().getContextClassLoader(), className, swapPath);
+                String className = "org.yinan.exec.VersionControl";
+
+                FileSystemClassLoader classLoader = new FileSystemClassLoader(swapPath);
+
+
                 try {
-                    Application application = (Application) myClassLoader.loadClass().newInstance();
-                    application.printVersion();
+                    VersionControl versionControl = (VersionControl) classLoader.loadClass(className).newInstance();
+                    versionControl.printVersion();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

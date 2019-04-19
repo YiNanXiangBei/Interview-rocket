@@ -29,3 +29,4 @@ hs_err_pid*
 /interview-transaction/target/
 /interview-classloader/interview-classloader.iml
 /interview-redis/interview-redis.iml
+/interview-jmh/interview-jmh.iml

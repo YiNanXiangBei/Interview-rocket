@@ -31,3 +31,4 @@ hs_err_pid*
 /interview-redis/interview-redis.iml
 /interview-jmh/interview-jmh.iml
 /interview-jmh/target/
+/interview-redis/target/

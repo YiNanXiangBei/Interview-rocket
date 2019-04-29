@@ -6,6 +6,7 @@ package org.yinan.exec;
  */
 public class VersionControl {
     public void printVersion() {
-        System.out.println("版本号20");
+        System.out.println(getClass().getClassLoader().getClass());
+        System.out.println("版本号2221");
     }
 }

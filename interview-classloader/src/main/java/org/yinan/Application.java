@@ -5,6 +5,7 @@ import org.yinan.exec.VersionControl;
 import org.yinan.loader.FileSystemClassLoader;
 import org.yinan.loader.MyClassLoader;
 
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,15 +19,18 @@ public class Application {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                String swapPath = "/home/laowang/gitwarehouse/Interview-rocket/interview-classloader/target/classes/";
+                String swapPath = "/home/tomcat/log";
                 String className = "org.yinan.exec.VersionControl";
 
-                FileSystemClassLoader classLoader = new FileSystemClassLoader(swapPath);
+                FileSystemClassLoader classLoader = new FileSystemClassLoader(ClassLoader.getSystemClassLoader(), swapPath);
 
 
                 try {
-                    VersionControl versionControl = (VersionControl) classLoader.loadClass(className).newInstance();
-                    versionControl.printVersion();
+                    Class clazz = classLoader.loadClass(className);
+//                    Class clazz = Class.forName(className, true, classLoader);
+                    Object object = clazz.newInstance();
+                    Method method = clazz.getDeclaredMethod("printVersion", null);
+                    method.invoke(object, null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

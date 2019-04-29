@@ -9,7 +9,8 @@ import java.io.*;
 public class FileSystemClassLoader extends ClassLoader{
     private String rootDir;
 
-    public FileSystemClassLoader(String rootDir) {
+    public FileSystemClassLoader(ClassLoader classLoader, String rootDir) {
+        super(classLoader);
         this.rootDir = rootDir;
     }
 

@@ -1,7 +1,6 @@
 package org.yinan.loader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -12,36 +11,24 @@ import java.util.Map;
  * @author yinan
  * @date created in 下午3:42 19-4-29
  */
-public class HotSwapURLCLassLoader extends URLClassLoader {
+public class HotSwapURLCLassLoader extends ClassLoader {
 
     //缓存加载class文件的最后修改时间
     public static Map<String, Long> cacheLastModifyTimeMap = new HashMap<>();
 
     //class类所在路径
-    public static String projectClassPath = "/home/laowang/gitwarehouse/Interview-rocket/interview-classloader/target/classes/org/yinan/loader/";
+    public static String rootDir = "/home/laowang/gitwarehouse/Interview-rocket/interview-classloader/target/classes";
 
-    //类所在包
-    public static String packagePath = "org/yinan/loader/";
 
     private static HotSwapURLCLassLoader hcl = new HotSwapURLCLassLoader();
 
     public HotSwapURLCLassLoader() {
-        super(getMyURLs());
     }
 
     public static HotSwapURLCLassLoader getClassLoader() {
         return hcl;
     }
 
-    private static URL[] getMyURLs() {
-        URL url = null;
-        try {
-            url = new File(projectClassPath).toURI().toURL();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return new URL[] {url};
-    }
 
     @Override
     public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -61,21 +48,21 @@ public class HotSwapURLCLassLoader extends URLClassLoader {
             return (clazz);
         }
 
-        if (name.startsWith("java.")) {
-            try {
-                ClassLoader system = ClassLoader.getSystemClassLoader();
-                clazz = system.loadClass(name);
-                if (clazz != null) {
-                    if (resolve) {
-                        resolveClass(clazz);
-                    }
-                    return (clazz);
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        if (name.startsWith("org.yinan.exec")) {
+            return customLoad(name, this);
         }
-        return customLoad(name, this);
+        try {
+            ClassLoader system = ClassLoader.getSystemClassLoader();
+            clazz = system.loadClass(name);
+            if (clazz != null) {
+                if (resolve) {
+                    resolveClass(clazz);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return (clazz);
     }
 
 
@@ -121,7 +108,43 @@ public class HotSwapURLCLassLoader extends URLClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        return super.findClass(name);
+        byte[] classData = getClasszData(name);
+        if (classData == null) {
+            throw new ClassNotFoundException();
+        } else {
+            return defineClass(name, classData, 0, classData.length);
+        }
+    }
+
+    private byte[] getClasszData(String className) {
+        String path = classNameToPath(className);
+        try {
+            InputStream inputStream = new FileInputStream(path);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int bufferSize = 4096;
+            byte[] buffer = new byte[bufferSize];
+            int byteNumRead = 0;
+            while ((byteNumRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, byteNumRead);
+            }
+
+            return baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    /**
+     * .class完整路径
+     * @param className
+     * @return
+     */
+    private String classNameToPath(String className) {
+        return rootDir + File.separatorChar
+                + className.replace('.', File.separatorChar) + ".class";
     }
 
     /**
@@ -130,7 +153,7 @@ public class HotSwapURLCLassLoader extends URLClassLoader {
      * @return
      */
     private long getClassLastModifyTime(String name) {
-        String path = getClassCompletePath(name);
+        String path = classNameToPath(name);
         File file = new File(path);
         if (!file.exists()) {
             throw new RuntimeException(new FileNotFoundException(name));
@@ -149,13 +172,5 @@ public class HotSwapURLCLassLoader extends URLClassLoader {
         return lastModify > previousModifyTime;
     }
 
-    /**
-     * .class文件的完整路径
-     * @param name
-     * @return
-     */
-    private String getClassCompletePath(String name) {
-        String simpleName = name.substring(name.lastIndexOf(".") + 1);
-        return projectClassPath + packagePath + simpleName + ".class";
-    }
+
 }

@@ -17,7 +17,7 @@ public class TestHotSwap {
 
 class MointorHotSwap implements Runnable {
 
-    private String className = ".home.laowang.gitwarehouse.Interview-rocket.interview-classloader.target.classes.org.yinan.exec.Hot";
+    private String className = "org.yinan.exec.Hot";
     private Class hotClazz = null;
     private HotSwapURLCLassLoader hotSwapURLCLassLoader = null;
 

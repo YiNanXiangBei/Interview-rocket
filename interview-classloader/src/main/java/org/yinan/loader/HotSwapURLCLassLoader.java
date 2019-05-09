@@ -90,7 +90,7 @@ public class HotSwapURLCLassLoader extends ClassLoader {
      * @throws ClassNotFoundException
      */
     public Class customLoad(String name, boolean resolve, ClassLoader cl) throws ClassNotFoundException {
-        //调用的是URLClassLoader里面重载了ClassLoader的findClass()方法
+        //调用的是ClassLoader里面重载了ClassLoader的findClass()方法
         Class clazz = ((HotSwapURLCLassLoader)cl).findClass(name);
         if (resolve) {
             ((HotSwapURLCLassLoader)cl).resolveClass(clazz);

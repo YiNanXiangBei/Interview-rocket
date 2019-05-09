@@ -6,6 +6,6 @@ package org.yinan.exec;
  */
 public class Hot {
     public void hot() {
-        System.out.println("version 21: " + this.getClass().getClassLoader());
+        System.out.println("我成了11: " + this.getClass().getClassLoader());
     }
 }
